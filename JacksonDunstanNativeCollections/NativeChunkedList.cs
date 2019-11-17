@@ -1644,6 +1644,31 @@ namespace JacksonDunstan.NativeCollections
 		}
 
 		/// <summary>
+		/// Changes the list length, resizing if necessary.
+		/// </summary>
+		/// <param name="length">The new length of the list.</param>
+		public void Resize(int newLength)
+		{
+			// Note: We dont provide a NativeArrayOptions arg as setting
+			// capacity always clears the chunks on creation
+
+			RequireReadAccess();
+			RequireWriteAccess();
+			RequireFullListSafetyCheckBounds();
+
+			// Increase capacity if full
+			int oldLength = m_State->m_Length;
+			int capacity = m_State->m_Capacity;
+			if (newLength > capacity)
+			{
+				Capacity = newLength;
+			}
+
+			// Set the new length to account for the added elements
+			m_State->m_Length = newLength;
+		}
+
+		/// <summary>
 		/// Insert an element into the list at a given index and shift all
 		/// elements starting at the insertion point back. Increases the
 		/// <see cref="Capacity"/> if the list is too full to fit the
