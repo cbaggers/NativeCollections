@@ -1503,6 +1503,19 @@ namespace JacksonDunstan.NativeCollections
 			}
 		}
 
+		public T* GetUnsafeElementPtr(int index)
+		{
+			RequireReadAccess();
+			RequireParallelForAccess(index);
+
+			int chunkLength = m_State->m_ChunkLength;
+			int chunkIndex = index / chunkLength;
+			int chunkArrayIndex = index % chunkLength;
+			void* chunkArray = m_State->m_Chunks[chunkIndex].m_Values;
+			var ptr = ((T*)chunkArray) + chunkArrayIndex;
+			return ptr;
+		}
+
 		/// <summary>
 		/// Add an element to the end of the list. Increases the
 		/// <see cref="Capacity"/> if the list is full.
